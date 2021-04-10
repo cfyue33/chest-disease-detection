@@ -3,6 +3,7 @@
 
 <head>
   <link rel="stylesheet" href="./lib/css/styles.css">
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 </head>
 
 <body>
@@ -50,32 +51,35 @@
       <div class="big-card">
         <div class="card">
           <div class="title">
-            Add an Annotation for the Weight Observation
-          </div>
-        <span>  <input class="annotation-box" id="annotation">
-          <button class="annotation-button" id="add">Add</button></span>
-          <div class="annotations">
-          Latest Annotation
-          <li id="note">No annotations</li>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="title">
             Medication Requests
           </div>
           <ul id="med_list"></ul>
         </div>
+		
+		<div class="card">
+		  <div class="title">
+		    Chest Disease Dedection
+		  </div>
+		  <p>Please upload a chest X-ray image (.png format only):</p>
+		  <form action="/action_page.php">
+		    <input type="file" id="myFile" name="filename">
+            <input type="submit">
+		  </form>
+		  <p>Prediction Results:</p>
+          <li id="result">No prediction</li>
+          </div>
+		  
       </div>
 
     </main>
   </div>
 
   <script src='./lib/js/fhir-client.js'></script>
-  <script src="./lib/js/get-data.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+  <!-- <script src="./lib/js/get-data.js"></script> -->
 
   <!-- uncomment below script and comment above script to switch for easy local testing -->
-  <!-- <script src="./lib/js/get-data-test.js"></script> -->
+  <script src="./lib/js/get-data-test.js"></script>
 </body>
 
 </html>
