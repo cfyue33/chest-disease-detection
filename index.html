@@ -3,6 +3,7 @@
 
 <head>
   <link rel="stylesheet" href="./lib/css/styles.css">
+  <link rel="stylesheet" type="text/css" href="https://unpkg.com/file-upload-with-preview/dist/file-upload-with-preview.min.css">
   <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 </head>
 
@@ -56,18 +57,28 @@
           <ul id="med_list"></ul>
         </div>
 		
-		<div class="card">
-		  <div class="title">
-		    Chest Disease Dedection
-		  </div>
-		  <p>Please upload a chest X-ray image (.png format only):</p>
-		  <form action="/action_page.php">
-		    <input type="file" id="myFile" name="filename">
-            <input type="submit">
-		  </form>
-		  <p>Prediction Results:</p>
-          <li id="result">No prediction</li>
+        <div class="card">
+          <div class="title">
+            Chest Disease Detection
           </div>
+          <p>Please upload a chest X-ray image (png):</p>
+          <!-- TODO: make the action on the form trigger an image upload to model (see below) -->
+          <form action="/action_page.php">
+            <div class="custom-file-container" data-upload-id="myFirstImage">
+              <label>Upload (Single File) <a href="javascript:void(0)" style="color:red ! important;" class="custom-file-container__image-clear" title="Clear Image">&times;</a></label>
+              <label class="custom-file-container__custom-file">
+                  <input type="file" class="custom-file-container__custom-file__custom-file-input" id="customFile" accept="image/png">
+                  <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
+                  <span class="custom-file-container__custom-file__custom-file-control"></span>
+              </label>
+              <div style="background-size: contain ! important;" class="custom-file-container__image-preview"></div>
+            </div>
+            <!-- TODO: Make more user friendly button -->
+            <input id="submit" type="submit">
+          </form>
+          <p>Prediction Results:</p>
+            <li id="result">No prediction</li>
+        </div>
 		  
       </div>
 
@@ -80,6 +91,57 @@
 
   <!-- uncomment below script and comment above script to switch for easy local testing -->
   <script src="./lib/js/get-data-test.js"></script>
+  <script src="https://unpkg.com/file-upload-with-preview@4.1.0/dist/file-upload-with-preview.min.js"></script> 
+  <script src="https://sdk.amazonaws.com/js/aws-sdk-2.884.0.min.js"></script>
+  <script>
+
+      // code from npm library page found here: https://www.npmjs.com/package/file-upload-with-preview/v/3.1.1
+      var upload = new FileUploadWithPreview("myFirstImage", {
+          // showDeleteButtonOnImages: true,
+          text: {
+              browse: "Browse",
+          },
+          clearButton: {},
+          maxFileCount: 1
+      });
+      window.addEventListener('fileUploadWithPreview:imagesAdded', function (e) {
+        if (e.detail.uploadId === 'myFirstImage') {
+            console.log(e.detail.addedFilesCount)
+            console.log(e.detail.cachedFileArray)
+        }
+      });
+      
+      window.addEventListener('submit', function (e) {
+        // TODO: figure out how to reference node_modules (browserify?)
+        const AWS = require("aws-sdk");
+        const fs = require("fs");
+
+        const sageMakerRuntime = new AWS.SageMakerRuntime({
+          region: "us-east-1",
+          accessKeyId: "XXXXXXXXXXXX",
+          secretAccessKey: "XXXXXXXXXXXXXXXXXXXXXXXXXXX"
+        });
+
+        const bitmap = fs.readFileSync(upload.cachedFileArray[0]);
+
+        var params = {
+          Body: bitmap,
+          EndpointName: "<endpoint-name>",
+          ContentType: "image/png"
+        };
+
+        sageMakerRuntime.invokeEndpoint(params, function(err, data) {
+          if (err) {
+            console.log(err, err.stack);
+          } else {
+            responseData = JSON.parse(Buffer.from(data.Body).toString());
+            console.log(responseData);
+
+            // TODO: update UI with response from model
+          }
+        });
+      });
+  </script> 
 </body>
 
 </html>
