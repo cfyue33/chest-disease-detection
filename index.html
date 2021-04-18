@@ -63,7 +63,6 @@
             Chest Disease Detection
           </div>
           <p>Please upload a chest X-ray image (png):</p>
-          <!-- TODO: make the action on the form trigger an image upload to s3 (see below) -->
           <form id="img-upload" action="http://s3.amazonaws.com/chest-xray" method="post" enctype="multipart/form-data">
             <input type="hidden" name="acl" value="public-read" />
             <input type="hidden" name="content-type" value="image/png" />
@@ -134,7 +133,7 @@
       // document.body.addEventListener("submit", async function (event) {
       //   event.preventDefault();
 
-      //   // TODO: does Sagemaker model expect s3 url?
+      //   // TODO: Ask Arnesh if Sagemaker API can take in s3 url
       //   const sageMakerRuntime = new AWS.SageMakerRuntime({
       //     region: "us-east-1",
       //     accessKeyId: "XXXXXXXXXXXX",
@@ -156,7 +155,7 @@
       //       responseData = JSON.parse(Buffer.from(data.Body).toString());
       //       console.log(responseData);
 
-      //       // TODO: update UI with response from model
+      //       // TODO: update UI with response from model (last step -> only need to do this after the model is trained)
       //     }
       //   });
       // });
