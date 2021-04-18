@@ -4,6 +4,7 @@
 <head>
   <link rel="stylesheet" href="./lib/css/styles.css">
   <link rel="stylesheet" type="text/css" href="https://unpkg.com/file-upload-with-preview/dist/file-upload-with-preview.min.css">
+  <script src="https://sdk.amazonaws.com/js/aws-sdk-2.888.0.min.js"></script>
   <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 </head>
 
@@ -62,19 +63,21 @@
             Chest Disease Detection
           </div>
           <p>Please upload a chest X-ray image (png):</p>
-          <!-- TODO: make the action on the form trigger an image upload to model (see below) -->
-          <form action="/action_page.php">
+          <!-- TODO: make the action on the form trigger an image upload to s3 (see below) -->
+          <form id="img-upload" action="http://s3.amazonaws.com/chest-xrays" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="acl" value="public-read" />
+            <input type="hidden" name="content-type" value="image/png" />
             <div class="custom-file-container" data-upload-id="myFirstImage">
               <label>Upload (Single File) <a href="javascript:void(0)" style="color:red ! important;" class="custom-file-container__image-clear" title="Clear Image">&times;</a></label>
               <label class="custom-file-container__custom-file">
-                  <input type="file" class="custom-file-container__custom-file__custom-file-input" id="customFile" accept="image/png">
+                  <input name="file" type="file" class="custom-file-container__custom-file__custom-file-input" id="customFile" accept="image/png">
                   <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
                   <span class="custom-file-container__custom-file__custom-file-control"></span>
               </label>
               <div style="background-size: contain ! important;" class="custom-file-container__image-preview"></div>
             </div>
             <!-- TODO: Make more user friendly button -->
-            <input id="submit" type="submit">
+            <input name="submit" value="Submit" type="submit" />
           </form>
           <p>Prediction Results:</p>
             <li id="result">No prediction</li>
@@ -101,10 +104,8 @@
   <script src="https://unpkg.com/file-upload-with-preview@4.1.0/dist/file-upload-with-preview.min.js"></script> 
   <script src="https://sdk.amazonaws.com/js/aws-sdk-2.884.0.min.js"></script>
   <script>
-
       // code from npm library page found here: https://www.npmjs.com/package/file-upload-with-preview/v/3.1.1
       var upload = new FileUploadWithPreview("myFirstImage", {
-          // showDeleteButtonOnImages: true,
           text: {
               browse: "Browse",
           },
@@ -116,38 +117,49 @@
             console.log(e.detail.addedFilesCount)
             console.log(e.detail.cachedFileArray)
         }
+
+        var name = e.detail.cachedFileArray[0]['name']
+
+        var input = document.createElement("input");
+        input.setAttribute("type", "hidden");
+
+        input.setAttribute("name", "key");
+
+        input.setAttribute("value", name);
+
+        document.getElementById("img-upload").prepend(input);
+
       });
-      
-      window.addEventListener('submit', function (e) {
-        // TODO: figure out how to reference node_modules (browserify?)
-        const AWS = require("aws-sdk");
-        const fs = require("fs");
 
-        const sageMakerRuntime = new AWS.SageMakerRuntime({
-          region: "us-east-1",
-          accessKeyId: "XXXXXXXXXXXX",
-          secretAccessKey: "XXXXXXXXXXXXXXXXXXXXXXXXXXX"
-        });
+      // document.body.addEventListener("submit", async function (event) {
+      //   event.preventDefault();
 
-        const bitmap = fs.readFileSync(upload.cachedFileArray[0]);
+      //   // TODO: does Sagemaker model expect s3 url?
+      //   const sageMakerRuntime = new AWS.SageMakerRuntime({
+      //     region: "us-east-1",
+      //     accessKeyId: "XXXXXXXXXXXX",
+      //     secretAccessKey: "XXXXXXXXXXXXXXXXXXXXXXXXXXX"
+      //   });
 
-        var params = {
-          Body: bitmap,
-          EndpointName: "<endpoint-name>",
-          ContentType: "image/png"
-        };
+      //   const bitmap = fs.readFileSync(upload.cachedFileArray[0]);
 
-        sageMakerRuntime.invokeEndpoint(params, function(err, data) {
-          if (err) {
-            console.log(err, err.stack);
-          } else {
-            responseData = JSON.parse(Buffer.from(data.Body).toString());
-            console.log(responseData);
+      //   var params = {
+      //     Body: bitmap,
+      //     EndpointName: "<endpoint-name>",
+      //     ContentType: "image/png"
+      //   };
 
-            // TODO: update UI with response from model
-          }
-        });
-      });
+      //   sageMakerRuntime.invokeEndpoint(params, function(err, data) {
+      //     if (err) {
+      //       console.log(err, err.stack);
+      //     } else {
+      //       responseData = JSON.parse(Buffer.from(data.Body).toString());
+      //       console.log(responseData);
+
+      //       // TODO: update UI with response from model
+      //     }
+      //   });
+      // });
   </script> 
 </body>
 
