@@ -64,7 +64,7 @@
           </div>
           <p>Please upload a chest X-ray image (png):</p>
           <!-- TODO: make the action on the form trigger an image upload to s3 (see below) -->
-          <form id="img-upload" action="http://s3.amazonaws.com/chest-xrays" method="post" enctype="multipart/form-data">
+          <form id="img-upload" action="http://s3.amazonaws.com/chest-xray" method="post" enctype="multipart/form-data">
             <input type="hidden" name="acl" value="public-read" />
             <input type="hidden" name="content-type" value="image/png" />
             <div class="custom-file-container" data-upload-id="myFirstImage">
