@@ -67,7 +67,10 @@
             <input type="hidden" name="acl" value="public-read" />
             <input type="hidden" name="content-type" value="image/png" />
             <div class="custom-file-container" data-upload-id="myFirstImage">
-              <label>Upload (Single File) <a href="javascript:void(0)" style="color:red ! important;" class="custom-file-container__image-clear" title="Clear Image">&times;</a></label>
+              <label>Upload (Single File) </label>
+              <button>
+                <a href="javascript:void(0)" style="text-decoration: none; color:black ! important;" class="custom-file-container__image-clear" title="Clear Image">Remove Image</a>
+              </button>
               <label class="custom-file-container__custom-file">
                   <input name="file" type="file" class="custom-file-container__custom-file__custom-file-input" id="customFile" accept="image/png">
                   <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
@@ -75,8 +78,9 @@
               </label>
               <div style="background-size: contain ! important;" class="custom-file-container__image-preview"></div>
             </div>
-            <!-- TODO: Make more user friendly button -->
-            <input name="submit" value="Submit" type="submit" />
+            <span>
+              <input id="submit" name="submit" value="Submit" type="submit" />
+            </span>
           </form>
           <p>Prediction Results:</p>
             <li id="result">No prediction</li>
@@ -130,35 +134,24 @@
 
       });
 
-      // document.body.addEventListener("submit", async function (event) {
-      //   event.preventDefault();
 
-      //   // TODO: Ask Arnesh if Sagemaker API can take in s3 url
-      //   const sageMakerRuntime = new AWS.SageMakerRuntime({
-      //     region: "us-east-1",
-      //     accessKeyId: "XXXXXXXXXXXX",
-      //     secretAccessKey: "XXXXXXXXXXXXXXXXXXXXXXXXXXX"
-      //   });
+      $("#submit").click(function(){
+        $.ajax({
+          type: "POST",
+          dataType: "json", // TODO: return type from model, check with Arnesh
+          url: "https://httpbin.org/post", // this is a sample endpoint that works, but replace with endpoint url from API gateway
+          // TODO: need to add request parameters (s3 url? or image?)
 
-      //   const bitmap = fs.readFileSync(upload.cachedFileArray[0]);
+          success: function(data) {
+            console.log("Success", data);
+            document.getElementById("result").innerHTML = "MODEL PREDICTION";  // TODO: update with data from Sagemaker response
+          },
+          error: function(data) {
+            console.log("Error", data);
+          }
+        });
 
-      //   var params = {
-      //     Body: bitmap,
-      //     EndpointName: "<endpoint-name>",
-      //     ContentType: "image/png"
-      //   };
-
-      //   sageMakerRuntime.invokeEndpoint(params, function(err, data) {
-      //     if (err) {
-      //       console.log(err, err.stack);
-      //     } else {
-      //       responseData = JSON.parse(Buffer.from(data.Body).toString());
-      //       console.log(responseData);
-
-      //       // TODO: update UI with response from model (last step -> only need to do this after the model is trained)
-      //     }
-      //   });
-      // });
+      });
   </script> 
 </body>
 
