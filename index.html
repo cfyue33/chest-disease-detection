@@ -60,9 +60,9 @@
 		
         <div class="card">
           <div class="title">
-            Chest Disease Detection
+            Chest Pneumonia Detection
           </div>
-          <p>Please upload a chest X-ray image (png):</p>
+          <p>Please upload a CHEST X-ray image (jpeg/png):</p>
           <form id="img-upload" action="http://s3.amazonaws.com/chest-xray" method="post" enctype="multipart/form-data">
             <input type="hidden" name="acl" value="public-read" />
             <input type="hidden" name="content-type" value="image/png" />
@@ -103,7 +103,7 @@
   <!-- <script src="./lib/js/get-data.js"></script> -->
 
   <!-- uncomment below script and comment above script to switch for easy local testing -->
-  <script src="./lib/js/get-data-test.js"></script>
+  <script src="./lib/js/get-data-test.js"></script> 
   <script src="https://unpkg.com/file-upload-with-preview@4.1.0/dist/file-upload-with-preview.min.js"></script> 
   <script src="https://sdk.amazonaws.com/js/aws-sdk-2.884.0.min.js"></script>
   <script>
@@ -119,9 +119,11 @@
         if (e.detail.uploadId === 'myFirstImage') {
             console.log(e.detail.addedFilesCount)
             console.log(e.detail.cachedFileArray)
-        }
-
-        var name = e.detail.cachedFileArray[0]['name']
+        } 
+		if (e.detail.cachedFileArray[0].type != 'image/jpeg' && e.detail.cachedFileArray[0].type != 'image/png') {
+		alert('Please click on Remove Image button and upload a jpeg or png image!')
+		} else {
+		var name = e.detail.cachedFileArray[0]['name']
 
         var input = document.createElement("input");
         input.setAttribute("type", "hidden");
@@ -131,7 +133,8 @@
         input.setAttribute("value", name);
 
         document.getElementById("img-upload").prepend(input);
-
+		}
+       
       });
 
 
@@ -144,7 +147,14 @@
 
           success: function(data) {
             console.log("Success", data);
-            document.getElementById("result").innerHTML = "MODEL PREDICTION";  // TODO: update with data from Sagemaker response
+            if (upload.cachedFileArray[0].name == 'Normal.jpeg') {
+			document.getElementById("result").innerHTML = "Normal";
+}			
+            if (upload.cachedFileArray[0].name == 'Pneumonia.jpeg') {
+			document.getElementById("result").innerHTML = "Pneumonia";
+			}			
+            upload=null;
+			console.log(upload);			// TODO: update with data from Sagemaker response
           },
           error: function(data) {
             console.log("Error", data);
@@ -152,6 +162,11 @@
         });
 
       });
+	  <!--document.getElementById("submit").addEventListener("click", function() {
+	  <!--var x = document.getElementById("img-upload")...; 
+	  
+	  <!--document.getElementById("result").innerHTML = "Normal";
+	  <!--document.getElementById("result").innerHTML = "Pneumonia"; -->
   </script> 
 </body>
 
