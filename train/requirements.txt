@@ -1,0 +1,5 @@
+argparse
+numpy
+sagemaker_containers
+torch
+torchvision

@@ -1,0 +1,5 @@
+sagemaker_containers
+numpy
+pillow
+torch
+torchvision
