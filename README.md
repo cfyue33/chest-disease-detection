@@ -832,7 +832,7 @@ def lambda_handler(event, context):
     runtime = boto3.Session().client(service_name='sagemaker-runtime')
     
     # set the object categories array
-    object_categories = ['normal','pneumonia']
+    object_categories = ['Normal','Pneumonia']
     
     # load the image bytes via the input url
     url = event['body']
