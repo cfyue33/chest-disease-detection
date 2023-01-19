@@ -5,7 +5,7 @@
 
 ## Table Of Contents
 
-- [Video Presentation] (#video-presentation)
+- [Video Presentation](#video-presentation)
 - [Introduction](#introduction)
 - [Setup Instructions](#setup-instructions)
   * [Log in to the AWS console and create a notebook instance](#log-in-to-the-aws-console-and-create-a-notebook-instance)
@@ -13,7 +13,7 @@
 - [Machine Learning Pipeline](#machine-learning-pipeline)
   * [Step 1 - Data collection](#step-1---data-collection)
   * [Step 2 - Data cleaning](#step-2---data-cleaning)
-  * [Step 3 - Feature labelling](#step-3---feature-labelling)
+  * [Step 3 - Feature scaling](#step-3---feature-scaling)
   * [Step 4 - Convolutional Neural Network (CNN) architecture](#step-4---convolutional-neural-network-cnn-architecture)
   * [Step 5 - Model training](#step-5---model-training)
   * [Step 6 - Deploying the trained model for testing](#step-6---deploying-the-trained-model-for-testing)
