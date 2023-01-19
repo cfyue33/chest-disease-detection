@@ -5,7 +5,7 @@
 
 ## Table Of Contents
 
-
+- [Video Presentation] (#video-presentation)
 - [Introduction](#introduction)
 - [Setup Instructions](#setup-instructions)
   * [Log in to the AWS console and create a notebook instance](#log-in-to-the-aws-console-and-create-a-notebook-instance)
@@ -26,7 +26,9 @@
   * [Important - Deleting the endpoint](#important---deleting-the-endpoint)
 
 
+## Video Presentation
 
+An overview of the work can be seen from this link: https://www.youtube.com/watch?v=Fa-9e0lSE3c 
 
 ## Introduction
 
